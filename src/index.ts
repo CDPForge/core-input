@@ -11,7 +11,7 @@ const app = express();
 const kafkaProducer = KafkaProducer.getInstance();
 
 // Middleware per il parsing del corpo della richiesta in formato JSON
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Usa il routing per le API
 app.use('/api', apiRoutes);

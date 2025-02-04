@@ -9,15 +9,7 @@ export const post = async (req: Request, res: Response) => {
   const log = req.body;
 
   if (!log || !log.message) {
-    return res.status(400).json({ error: 'Il log deve contenere un messaggio.' });
+    return res.status(400).end();
   }
-
-  try {
-    // Invia il log a Kafka
-    await kafkaProducer.sendLogToKafka(log);
-    res.status(200).json({ message: 'Log ricevuto e inviato a Kafka.' });
-  } catch (error) {
-    console.error('Errore nell\'invio del log a Kafka:', error);
-    res.status(500).json({ error: 'Errore nell\'invio del log a Kafka.' });
-  }
+  await kafkaProducer.sendLogToKafka(log).then(() => res.status(200).end()).catch((err) => res.status(500).end());
 };
