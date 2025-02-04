@@ -1,0 +1,44 @@
+image: docker:latest
+
+# Usa Docker in Docker (DinD) per buildare immagini
+services:
+  - docker:dind
+
+variables:
+  REGISTRY: "$CI_REGISTRY"
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE"
+  TAG: "$CI_COMMIT_REF_SLUG"
+
+stages:
+  - build
+  - test
+  - docker
+
+# 📌 Step 1: Build TypeScript
+build:
+  image: node:20.11.1-alpine
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+
+# 📌 Step 2: Run Tests
+test:
+  image: node:20.11.1-alpine
+  stage: test
+  script:
+    - npm ci
+    - npm run test
+
+# 📌 Step 3: Build & Push Docker Image
+docker-build:
+  stage: docker
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$REGISTRY"
+    - docker build -t "$IMAGE_NAME:$TAG" .
+    - docker push "$IMAGE_NAME:$TAG"
+  only:
+    - main
