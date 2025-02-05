@@ -29,7 +29,7 @@ describe('logController', () => {
     });
 
     test('should return 400 if log message is missing', async () => {
-        const req = { body: {} } as Request;
+        const req = { headers: { 'user-agent': "ua-test" }, body: {} } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
 
         await post(req, res);
@@ -38,7 +38,7 @@ describe('logController', () => {
     });
 
     test('should send log to Kafka and return 200', async () => {
-        const req = { body: { events: ['Test log'] } } as Request;
+        const req = { headers: { 'user-agent': "ua-test" }, body: { events: [{client: 100, instance:100}] } } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
 
         kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
@@ -50,7 +50,7 @@ describe('logController', () => {
     });
 
     test('should send log to Kafka and return 200 even if the events is not an array, but a single event', async () => {
-        const req = { body: { events: 'Test log' } } as Request;
+        const req = { headers: { 'user-agent': "ua-test" }, body: { events: {client: 100, instance:100} } } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
 
         kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
@@ -62,7 +62,7 @@ describe('logController', () => {
     });
 
     test('should return 500 if there is an error sending log to Kafka', async () => {
-        const req = { body: { events: ['Test log'] } } as Request;
+        const req = { headers: { 'user-agent': "ua-test" }, body: { events: [{client: 100, instance:100}] } } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
 
         kafkaProducerMock.sendLogToKafka.mockRejectedValueOnce(new Error('Kafka error'));

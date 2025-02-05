@@ -32,7 +32,7 @@ describe('KafkaProducer', () => {
     });
 
     test('should send a log to Kafka', async () => {
-        const log = ['Test log'];
+        const log = [{client: 100, instance:100}];
         await kafkaProducer.sendLogToKafka(log);
         const producer = (kafkaProducer as any).producer;
         expect(producer.send).toHaveBeenCalledWith({
