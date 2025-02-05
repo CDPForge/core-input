@@ -4,11 +4,6 @@ image: docker:latest
 services:
   - docker:dind
 
-variables:
-  REGISTRY: "$CI_REGISTRY"
-  IMAGE_NAME: "$CI_REGISTRY_IMAGE"
-  TAG: "$CI_COMMIT_REF_SLUG"
-
 stages:
   - build
   - test
@@ -24,6 +19,9 @@ build:
   artifacts:
     paths:
       - dist/
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v/
+      when: on_success
 
 # 📌 Step 2: Run Tests
 test:
@@ -32,13 +30,17 @@ test:
   script:
     - npm ci
     - npm run test
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v/
+      when: on_success
 
 # 📌 Step 3: Build & Push Docker Image
 docker-build:
   stage: docker
   script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$REGISTRY"
-    - docker build -t "$IMAGE_NAME:$TAG" .
-    - docker push "$IMAGE_NAME:$TAG"
-  only:
-    - main
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" -p "CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build -t "$CI_REGISTRY_IMAGE:$TAG" .
+    - docker push "$IMAGE_NAME:$CI_COMMIT_TAG"
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v/
+      when: on_success

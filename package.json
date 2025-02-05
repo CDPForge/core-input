@@ -1,9 +1,9 @@
 {
-  "name": "node-express-api-ts",
+  "name": "node-express-tracker-api",
   "description": "Simple api sample in Node",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run build && npm run start'",
     "build": "tsc",
@@ -13,7 +13,6 @@
   "author": "Google LLC",
   "license": "Apache-2.0",
   "dependencies": {
-    "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "kafkajs": "^2.2.4"
   },

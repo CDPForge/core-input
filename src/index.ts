@@ -1,6 +1,5 @@
 // src/server.ts
 import express from 'express';
-import bodyParser from 'body-parser';
 import apiRoutes from './routes/apiRoute';
 import { KafkaProducer } from './kafkaProducer';
 
