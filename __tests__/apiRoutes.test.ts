@@ -37,7 +37,7 @@ describe('API Routes', () => {
     });
 
     test('should return 200 if log is sent to Kafka successfully', async () => {
-        const log = { message: 'Test log' };
+        const log = { events: ['Test log'] };
 
         kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
 
@@ -45,7 +45,7 @@ describe('API Routes', () => {
     });
 
     test('should return 500 if there is an error sending log to Kafka', async () => {
-        const log = { message: 'Test log' };
+        const log = { events: ['Test log'] };
 
         kafkaProducerMock.sendLogToKafka.mockRejectedValueOnce(new Error('Kafka error'));
 

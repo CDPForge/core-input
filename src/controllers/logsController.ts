@@ -8,8 +8,18 @@ const kafkaProducer = KafkaProducer.getInstance();
 export const post = async (req: Request, res: Response) => {
   const log = req.body;
 
-  if (!log || !log.message) {
+  if (!log || !log.events) {
     return res.status(400).end();
   }
-  await kafkaProducer.sendLogToKafka(log).then(() => res.status(200).end()).catch((err) => res.status(500).end());
+
+  if (!Array.isArray(log.events)) {
+    log.events = [log.events];
+  }
+
+  await kafkaProducer.sendLogToKafka(log.events)
+  .then(() => res.status(200).end())
+  .catch((err) => {
+    console.error(err);
+    res.status(500).end();
+  });
 };

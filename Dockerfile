@@ -31,4 +31,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Comando per avviare l'applicazione
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/src/index.js"]

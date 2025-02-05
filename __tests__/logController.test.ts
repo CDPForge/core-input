@@ -38,19 +38,31 @@ describe('logController', () => {
     });
 
     test('should send log to Kafka and return 200', async () => {
-        const req = { body: { message: 'Test log' } } as Request;
+        const req = { body: { events: ['Test log'] } } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
 
         kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
 
         await post(req, res);
 
-        expect(kafkaProducerMock.sendLogToKafka).toHaveBeenCalledWith(req.body);
+        expect(kafkaProducerMock.sendLogToKafka).toHaveBeenCalledWith(req.body.events);
+        expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    test('should send log to Kafka and return 200 even if the events is not an array, but a single event', async () => {
+        const req = { body: { events: 'Test log' } } as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
+
+        kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
+
+        await post(req, res);
+
+        expect(kafkaProducerMock.sendLogToKafka).toHaveBeenCalledWith(req.body.events);
         expect(res.status).toHaveBeenCalledWith(200);
     });
 
     test('should return 500 if there is an error sending log to Kafka', async () => {
-        const req = { body: { message: 'Test log' } } as Request;
+        const req = { body: { events: ['Test log'] } } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn(), end: jest.fn() } as Response;
 
         kafkaProducerMock.sendLogToKafka.mockRejectedValueOnce(new Error('Kafka error'));
