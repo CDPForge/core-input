@@ -1,7 +1,6 @@
 // src/kafka/kafkaProducer.ts
 import { Kafka, Producer } from 'kafkajs';
-import { kafkaConfig } from '../config/config'; // Importa la configurazione
-
+import Config from './config';
 
 export class KafkaProducer {
   private producer: Producer;
@@ -10,8 +9,8 @@ export class KafkaProducer {
 
   private constructor() {
     this.kafka = new Kafka({
-      clientId: kafkaConfig.clientId,
-      brokers: kafkaConfig.brokers,
+      clientId: Config.getInstance().config.kafkaConfig.clientId,
+      brokers: Config.getInstance().config.kafkaConfig.brokers,
     });
     this.producer = this.kafka.producer();
   }
@@ -33,7 +32,7 @@ export class KafkaProducer {
   async sendLogToKafka(log: object): Promise<void> {
     try {
       await this.producer.send({
-        topic: kafkaConfig.topic, // Usa il topic definito nel file di configurazione
+        topic: Config.getInstance().config.kafkaConfig.topic, // Usa il topic definito nel file di configurazione
         messages: [
           {
             value: JSON.stringify(log),

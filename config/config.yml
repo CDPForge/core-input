@@ -1,0 +1,5 @@
+kafkaConfig:
+  clientId: 'log-server'
+  brokers: 
+    - 'localhost:9092'
+  topic: 'logs'
