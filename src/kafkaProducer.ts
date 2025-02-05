@@ -7,9 +7,11 @@ export class KafkaProducer {
   private kafka: Kafka;
   private static singleInstance: KafkaProducer;
 
+  private static podName = process.env.CLIENT_ID || 'default-client-id';
+
   private constructor() {
     this.kafka = new Kafka({
-      clientId: Config.getInstance().config.kafkaConfig.clientId,
+      clientId: `tracker-api-pod-${KafkaProducer.podName}`,
       brokers: Config.getInstance().config.kafkaConfig.brokers,
     });
     this.producer = this.kafka.producer();

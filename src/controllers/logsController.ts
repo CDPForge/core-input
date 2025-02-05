@@ -16,6 +16,12 @@ export const post = async (req: Request, res: Response) => {
     log.events = [log.events];
   }
 
+  log.events = log.events.map(l => {
+    l.ua = req.headers['user-agent'];
+    l.ip = req.clientIp;
+    return l;
+  });
+
   await kafkaProducer.sendLogToKafka(log.events)
   .then(() => res.status(200).end())
   .catch((err) => {

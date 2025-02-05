@@ -2,6 +2,7 @@
 import express from 'express';
 import apiRoutes from './routes/apiRoute';
 import { KafkaProducer } from './kafkaProducer';
+import requestIp from 'request-ip';
 
 // Crea una nuova istanza di Express
 const app = express();
@@ -11,6 +12,7 @@ const kafkaProducer = KafkaProducer.getInstance();
 
 // Middleware per il parsing del corpo della richiesta in formato JSON
 app.use(express.json());
+app.use(requestIp.mw());
 
 // Usa il routing per le API
 app.use('/api', apiRoutes);
