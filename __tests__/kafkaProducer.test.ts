@@ -1,5 +1,17 @@
 // __tests__/kafkaProducer.test.ts
 import { KafkaProducer } from '../src/kafkaProducer';
+import { Event } from '../src/types';
+
+const validEvent: Event = {
+    client: 100,
+    instance: 100,
+    event: 'click',
+    href: 'https://www.example.com',
+    pageTitle: 'Example Page',
+    timestamp: new Date().toISOString(),
+    did: 'unique-device-id',
+    session: 'session-id',
+}
 
 // Mock della libreria Kafka
 jest.mock('kafkajs', () => {
@@ -33,11 +45,11 @@ describe('KafkaProducer', () => {
 
     test('should send a log to Kafka', async () => {
         const log = [{client: 100, instance:100}];
-        await kafkaProducer.sendLogToKafka(log);
+        await kafkaProducer.sendLogToKafka([validEvent]);
         const producer = (kafkaProducer as any).producer;
         expect(producer.send).toHaveBeenCalledWith({
             topic: 'logs',
-            messages: [{ value: JSON.stringify(log[0]) }],
+            messages: [{ value: JSON.stringify(validEvent) }],
         });
     });
 
