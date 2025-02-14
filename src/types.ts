@@ -21,8 +21,14 @@ export interface Event {
   did: string;
   session: string;
   gdpr?: string;
+  order?: string;
+  products?: Product[];
+  target?: string;
+  oldId?: string;
+  newId?: string;
+  ExternalIdtype?: string;
+  ExternalId?: string;
   userAgent?: string;
   ip?: string;
   topics?: number[];
-  [key: string]: any;
 }

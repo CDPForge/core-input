@@ -1,6 +1,7 @@
 // src/kafka/kafkaProducer.ts
 import { Kafka, Producer } from 'kafkajs';
 import Config from './config';
+import { Event } from './types';
 
 export class KafkaProducer {
   private producer: Producer;
@@ -31,7 +32,7 @@ export class KafkaProducer {
   }
 
   // Invia un log al topic Kafka
-  async sendLogToKafka(logs: Array<Object>): Promise<void> {
+  async sendLogToKafka(logs: Event[]): Promise<void> {
     try {
       await this.producer.send({
         topic: Config.getInstance().config.kafkaConfig.topic.LOGS, // Usa il topic definito nel file di configurazione
