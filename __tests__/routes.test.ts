@@ -1,7 +1,7 @@
 // __tests__/apiRoutes.test.ts
 import request from 'supertest';
 import express from 'express';
-import apiRoutes from '../src/routes/apiRoute';
+import defineRoutes from '../src/routes';
 import { KafkaProducer } from '../src/kafkaProducer';
 
 // Mock del KafkaProducer
@@ -15,7 +15,7 @@ jest.mock('../src/kafkaProducer', () => {
 
 const app = express();
 app.use(express.json());
-app.use('/api', apiRoutes);
+defineRoutes(app);
 
 describe('API Routes', () => {
     let kafkaProducerMock: jest.Mocked<KafkaProducer>;
@@ -33,7 +33,7 @@ describe('API Routes', () => {
     });
 
     test('should return 400 if log message is missing', async () => {
-        await request(app).post('/api/log').send({}).set('Accept', 'application/json').set('Content-Type', 'application/json').expect(400);
+        await request(app).post('/events').send({}).set('Accept', 'application/json').set('Content-Type', 'application/json').expect(400);
     });
 
     test('should return 200 if log is sent to Kafka successfully', async () => {
@@ -41,7 +41,7 @@ describe('API Routes', () => {
 
         kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
 
-        await request(app).post('/api/log').send(log).set('Accept', 'application/json').set('Content-Type', 'application/json').expect(200);
+        await request(app).post('/events').send(log).set('Accept', 'application/json').set('Content-Type', 'application/json').expect(200);
     });
 
     test('should return 500 if there is an error sending log to Kafka', async () => {
@@ -49,6 +49,6 @@ describe('API Routes', () => {
 
         kafkaProducerMock.sendLogToKafka.mockRejectedValueOnce(new Error('Kafka error'));
 
-        await request(app).post('/api/log').send(log).set('Accept', 'application/json').set('Content-Type', 'application/json').expect(500);
+        await request(app).post('/events').send(log).set('Accept', 'application/json').set('Content-Type', 'application/json').expect(500);
     });
 });

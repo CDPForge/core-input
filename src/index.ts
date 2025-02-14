@@ -1,6 +1,6 @@
 // src/server.ts
 import express from 'express';
-import apiRoutes from './routes/apiRoute';
+import defineRoutes from './routes';
 import { KafkaProducer } from './kafkaProducer';
 import requestIp from 'request-ip';
 
@@ -14,8 +14,7 @@ const kafkaProducer = KafkaProducer.getInstance();
 app.use(express.json());
 app.use(requestIp.mw());
 
-// Usa il routing per le API
-app.use('/api', apiRoutes);
+defineRoutes(app);
 
 // Avvio del server Express
 const startServer = () => {
