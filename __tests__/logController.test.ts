@@ -134,7 +134,8 @@ describe('logController', () => {
         expect(kafkaProducerMock.sendLogToKafka).toHaveBeenCalledWith([validEvent]);
     });
     test('should set header Observe-Browsing-Topics to ?1 if the event is a topics event', async () => {
-        const req = { headers: { 'user-agent': "ua-test", 'Sec-Browsing-Topics': '(1 2 3);v=chrome.123:123:123' }, body: { events: [Object.assign({},validEvent,{ event: 'topics' })] } } as unknown as Request;
+        const evt = Object.assign({},validEvent,{ event: 'topics' });
+        const req = { headers: { 'user-agent': "ua-test", 'Sec-Browsing-Topics': '(1 2 3);v=chrome.123:123:123' }, body: { events: [evt] } } as unknown as Request;
         const res = {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
@@ -147,7 +148,8 @@ describe('logController', () => {
         kafkaProducerMock.sendLogToKafka.mockResolvedValueOnce(undefined); // Simula il successo
         await post(req, res, ()=>{});
         expect(res.setHeader).toHaveBeenCalledWith('Observe-Browsing-Topics', '?1');
-    });
-
-    
+        expect(kafkaProducerMock.sendLogToKafka).toHaveBeenCalledWith([evt]);
+        expect(evt.topics).toBeDefined();
+        expect(evt.topics).toEqual([1,2,3]);
+    }); 
 });
