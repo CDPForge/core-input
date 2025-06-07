@@ -33,7 +33,7 @@ export class KafkaProducer {
   async sendLogToKafka(logs: Event[]): Promise<void> {
     try {
       await this.producer.send({
-        topic: Config.getInstance().config.kafkaConfig.topic.LOGS, // Usa il topic definito nel file di configurazione
+        topic: Config.getInstance().config.kafkaConfig.topic.LOGS,
         messages: logs.map(l => {return {value: JSON.stringify(l)}})
       });
       console.log('Log inviato con successo a Kafka');
