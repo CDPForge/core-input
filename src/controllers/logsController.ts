@@ -1,10 +1,9 @@
-// src/controllers/logController.ts
+
 import { Request, RequestHandler, Response } from 'express';
 import { KafkaProducer } from '../kafkaProducer';
 import { Event } from '../types';
 const kafkaProducer = KafkaProducer.getInstance();
 
-// Funzione per gestire la rotta POST /log
 export const post: RequestHandler = async (req: Request, res: Response) => {
   const log = req.body;
 

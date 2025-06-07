@@ -1,12 +1,12 @@
-# Input Manager - Customer Data Platform
+# Core Input Manager
 
 ## Description
-The **Input Manager** module is a key component of the Customer Data Platform (CDP). It is responsible for collecting, validating, and forwarding real-time tracking events, as well as managing the processing of CSV files containing user or product data. Rather than uploading files directly, users will provide URLs or FTP links to where the files are located, allowing for the efficient processing of large files.
+The **Input Manager** module is a key component of the CDP Forge Platform. It is responsible for collecting, validating, and forwarding real-time tracking events, as well as managing the processing of CSV files containing user or product data. Rather than uploading files directly, users will provide URLs or FTP links to where the files are located, allowing for the efficient processing of large files.
 
 ### Main Features:
 - **/events**: API to collect real-time tracking events.
-- **/upload-users**: API to provide a URL/FTP location for a file containing user data.
-- **/upload-products**: API to provide a URL/FTP location for a file containing product data.
+- TODO: **/upload-users**: API to provide a URL/FTP location for a file containing user data.
+- TODO: **/upload-products**: API to provide a URL/FTP location for a file containing product data.
 
 ## Installation
 

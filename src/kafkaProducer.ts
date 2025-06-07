@@ -25,13 +25,11 @@ export class KafkaProducer {
     return KafkaProducer.singleInstance;
   }
 
-  // Connetti il producer Kafka
   async connect(): Promise<void> {
     await this.producer.connect();
     console.log('Producer Kafka connesso');
   }
 
-  // Invia un log al topic Kafka
   async sendLogToKafka(logs: Event[]): Promise<void> {
     try {
       await this.producer.send({
@@ -44,7 +42,6 @@ export class KafkaProducer {
     }
   }
 
-  // Disconnetti il producer Kafka
   async disconnect(): Promise<void> {
     await this.producer.disconnect();
     console.log('Producer Kafka disconnesso');
