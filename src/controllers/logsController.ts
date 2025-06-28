@@ -1,7 +1,9 @@
 
 import { Request, RequestHandler, Response } from 'express';
 import { KafkaProducer } from '../kafkaProducer';
-import { Event } from '../types';
+import { Event, GoogleTopic, Log, GoogleTopicsMap } from '@cdp-forge/types';
+import { UAParser } from 'ua-parser-js';
+
 const kafkaProducer = KafkaProducer.getInstance();
 
 export const post: RequestHandler = async (req: Request, res: Response) => {
@@ -24,7 +26,7 @@ export const post: RequestHandler = async (req: Request, res: Response) => {
     return true;
   });
 
-  events = events.map((l: Event) => {
+  const logs: Log[] = events.map((l: Event): Log => {
     l.userAgent = req.headers['user-agent'];
     l.ip = req.clientIp;
     if (l.event === 'topics') {
@@ -33,19 +35,20 @@ export const post: RequestHandler = async (req: Request, res: Response) => {
     const googleTopics = req.headers['Sec-Browsing-Topics'] as string;
     if (googleTopics) {
       const topicsMatch = googleTopics.match(/\(([\d\s]+)\);.*/);
-      if (topicsMatch) { 
-        l.topics = topicsMatch[1].split(" ").map(Number);
+      if (topicsMatch) {
+        l.topics = topicsMatch[1].split(" ").map((topic: string) => Number(topic) as keyof typeof GoogleTopicsMap);
       }
     }
-    return l;
+
+    return eventToLog(l);
   });
 
-  await kafkaProducer.sendLogToKafka(events)
-  .then(() => res.status(200).json({invalidEvents}).end())
-  .catch((err) => {
-    console.error(err);
-    res.status(500).end();
-  });
+  await kafkaProducer.sendLogToKafka(logs)
+    .then(() => res.status(200).json({ invalidEvents }).end())
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
 };
 
 const isValidEvent = (event: Event): boolean => {
@@ -68,5 +71,41 @@ const isValidEvent = (event: Event): boolean => {
     (Array.isArray(event.topics) || event.topics === undefined)
   );
 };
+
+const eventToLog = (event: Event): Log => {
+  const log: Log = {
+    client: event.client,
+    date: event.timestamp,
+    instance: event.instance,
+    event: event.event,
+    referrer: event.referrer,
+    session: event.session,
+    target: event.target,
+    device: { id: event.did, ip: event.ip, userAgent: event.userAgent },
+    page: { title: event.pageTitle, type: event.pageType, description: event.pageDescription, image: event.pageImage, href: event.href },
+    order: event.order,
+    product: event.products
+  }
+
+  if (event.userAgent) {
+    try {
+      const parser = new UAParser(event.userAgent);
+      log.device.browser = parser.getBrowser().name;
+      log.device.os = parser.getOS().name;
+      log.device.type = parser.getDevice().type || ['Windows', 'macOS', 'Linux'].includes(log.device.os!) ? 'Desktop' : undefined;
+    } catch (err) {
+      console.error('Error parsing user agent:', err);
+    }
+  }
+
+  if (event.topics) {
+    log.googleTopics = event.topics.map((topic: keyof typeof GoogleTopicsMap): GoogleTopic => ({
+      id: topic,
+      name: GoogleTopicsMap[topic]
+    }));
+  }
+
+  return log;
+}
 
 

@@ -1,7 +1,7 @@
 // src/kafka/kafkaProducer.ts
 import { Kafka, Producer } from 'kafkajs';
 import Config from './config';
-import { Event } from './types';
+import { Log } from '@cdp-forge/types';
 
 export class KafkaProducer {
   private producer: Producer;
@@ -30,7 +30,7 @@ export class KafkaProducer {
     console.log('Producer Kafka connesso');
   }
 
-  async sendLogToKafka(logs: Event[]): Promise<void> {
+  async sendLogToKafka(logs: Log[]): Promise<void> {
     try {
       await this.producer.send({
         topic: Config.getInstance().config.kafkaConfig.topic.LOGS,
