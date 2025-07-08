@@ -2,6 +2,7 @@ import express from 'express';
 import defineRoutes from './routes';
 import { KafkaProducer } from './kafkaProducer';
 import requestIp from 'request-ip';
+import cors from 'cors';
 
 const app = express();
 
@@ -9,6 +10,10 @@ const kafkaProducer = KafkaProducer.getInstance();
 
 app.use(express.json());
 app.use(requestIp.mw());
+
+app.use(cors({
+  origin: '*'
+}));
 
 defineRoutes(app);
 
