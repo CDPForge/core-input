@@ -14,7 +14,7 @@ export class KafkaProducer {
       clientId: `tracker-api-pod-${KafkaProducer.podName}`,
       brokers: config.kafka!.brokers
     });
-    this.producer = this.kafka.producer();
+    this.producer = this.kafka.producer({allowAutoTopicCreation: true});
   }
 
   public static getInstance(): KafkaProducer {

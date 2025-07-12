@@ -1,7 +1,7 @@
 {
   "name": "@cdp-forge/core-input",
   "description": "Simple api sample in Node",
-  "version": "1.0.0",
+  "version": "0.0.9",
   "private": true,
   "main": "./src/index.ts",
   "scripts": {
@@ -9,7 +9,9 @@
     "build": "tsc",
     "test": "npx jest",
     "start": "node dist/index.js",
-    "prestart": "npm run build"
+    "prestart": "npm run build",
+    "build_prod": "git push && git push --tags",
+    "prebuild_prod": "npm version patch"
   },
   "author": "Google LLC",
   "license": "Apache-2.0",
