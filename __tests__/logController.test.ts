@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { post } from '../src/controllers/logsController';
 import { KafkaProducer } from '../src/kafkaProducer';
-import { Event } from '../src/types';
+import { Event } from '@cdp-forge/types';
 // Mock del KafkaProducer
 jest.mock('../src/kafkaProducer', () => {
     return {

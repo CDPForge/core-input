@@ -3,6 +3,9 @@ import defineRoutes from './routes';
 import { KafkaProducer } from './kafkaProducer';
 import requestIp from 'request-ip';
 import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
+import config from 'config';
 
 const app = express();
 
@@ -18,7 +21,7 @@ app.use(cors({
 defineRoutes(app);
 
 const startServer = () => {
-  const PORT = process.env.PORT || 3000;
+  const PORT = config.get('port');
   app.listen(PORT, () => {
     console.log(`Server in ascolto sulla porta ${PORT}`);
   });

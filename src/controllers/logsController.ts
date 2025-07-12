@@ -14,10 +14,10 @@ export const post: RequestHandler = async (req: Request, res: Response) => {
     return;
   }
 
-  let events: Event[] = Array.isArray(log.events) ? log.events : [log.events];
+  let events: any[] = Array.isArray(log.events) ? log.events : [log.events];
 
   const invalidEvents: any[] = [];
-  events = events.filter((event: Event) => {
+  const validEvents: Event[] = events.filter((event: Event) => {
     if (!isValidEvent(event)) {
       console.error(`Invalid event: ${JSON.stringify(event)}`);
       invalidEvents.push(event);
@@ -26,7 +26,7 @@ export const post: RequestHandler = async (req: Request, res: Response) => {
     return true;
   });
 
-  const logs: Log[] = events.map((l: Event): Log => {
+  const logs: Log[] = validEvents.map((l: Event): Log => {
     l.userAgent = req.headers['user-agent'];
     l.ip = req.clientIp;
     if (l.event === 'topics') {
@@ -51,7 +51,7 @@ export const post: RequestHandler = async (req: Request, res: Response) => {
     });
 };
 
-const isValidEvent = (event: Event): boolean => {
+const isValidEvent = (event: any): boolean => {
   return (
     typeof event.client === 'number' &&
     typeof event.instance === 'number' &&
@@ -68,7 +68,7 @@ const isValidEvent = (event: Event): boolean => {
     (typeof event.gdpr === 'string' || event.gdpr === undefined) &&
     (typeof event.userAgent === 'string' || event.userAgent === undefined) &&
     (typeof event.ip === 'string' || event.ip === undefined) &&
-    (Array.isArray(event.topics) || event.topics === undefined)
+    ((Array.isArray(event.topics) && event.topics.every((t: any)=> (Object.keys(GoogleTopicsMap)).includes(t))) || event.topics === undefined)
   );
 };
 

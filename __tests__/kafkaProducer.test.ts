@@ -1,6 +1,6 @@
 // __tests__/kafkaProducer.test.ts
 import { KafkaProducer } from '../src/kafkaProducer';
-import { Event } from '../src/types';
+import { Event } from '@cdp-forge/types';
 
 const validEvent: Event = {
     client: 100,
