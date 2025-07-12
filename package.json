@@ -8,7 +8,7 @@
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run build && npm run start'",
     "build": "tsc",
     "test": "npx jest",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "prestart": "npm run build"
   },
   "author": "Google LLC",
@@ -24,6 +24,7 @@
     "kafkajs": "^2.2.4",
     "path": "^0.12.7",
     "request-ip": "^3.3.0",
+    "ts-node": "^10.9.2",
     "ua-parser-js": "^2.0.4",
     "yaml": "^2.7.0"
   },
