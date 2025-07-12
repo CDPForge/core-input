@@ -8,15 +8,13 @@
     "dev": "nodemon --watch 'src/**' --ext 'ts,json' --exec 'npm run build && npm run start'",
     "build": "tsc",
     "test": "npx jest",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "prestart": "npm run build"
   },
   "author": "Google LLC",
   "license": "Apache-2.0",
   "dependencies": {
     "@cdp-forge/types": "^1.1.6",
-    "@types/config": "^3.3.5",
-    "config": "^4.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^4.21.2",

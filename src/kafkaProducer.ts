@@ -1,5 +1,5 @@
 import { Kafka, Producer } from 'kafkajs';
-import config from 'config';
+import config from './config/default';
 import { Log } from '@cdp-forge/types';
 
 export class KafkaProducer {
@@ -12,7 +12,7 @@ export class KafkaProducer {
   private constructor() {
     this.kafka = new Kafka({
       clientId: `tracker-api-pod-${KafkaProducer.podName}`,
-      brokers: config.get("kafka.brokers")
+      brokers: config.kafka!.brokers
     });
     this.producer = this.kafka.producer();
   }
@@ -32,7 +32,7 @@ export class KafkaProducer {
   async sendLogToKafka(logs: Log[]): Promise<void> {
     try {
       await this.producer.send({
-        topic: config.get("pipelinemanager.first_topic"),
+        topic: config.pipelinemanager!.first_topic,
         messages: logs.map(l => {return {value: JSON.stringify(l)}})
       });
       console.log('Log inviato con successo a Kafka');

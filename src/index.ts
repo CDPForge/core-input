@@ -5,7 +5,7 @@ import requestIp from 'request-ip';
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
-import config from 'config';
+import config from './config/default';
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(cors({
 defineRoutes(app);
 
 const startServer = () => {
-  const PORT = config.get('port');
+  const PORT = config.port;
   app.listen(PORT, () => {
     console.log(`Server in ascolto sulla porta ${PORT}`);
   });
