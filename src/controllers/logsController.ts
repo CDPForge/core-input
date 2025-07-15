@@ -1,12 +1,15 @@
 
 import { Request, RequestHandler, Response } from 'express';
-import { KafkaProducer } from '../kafkaProducer';
+import PulsarProducer from '../pulsarProducer';
 import { Event, GoogleTopic, Log, GoogleTopicsMap } from '@cdp-forge/types';
 import { UAParser } from 'ua-parser-js';
 
-const kafkaProducer = KafkaProducer.getInstance();
+const producer = new PulsarProducer();
+producer.connect();
 
 export const post: RequestHandler = async (req: Request, res: Response) => {
+  console.log('Received log:', req.body);
+
   const log = req.body;
 
   if (!log || !log.events) {
@@ -43,7 +46,7 @@ export const post: RequestHandler = async (req: Request, res: Response) => {
     return eventToLog(l);
   });
 
-  await kafkaProducer.sendLogToKafka(logs)
+  await producer.sendLogs(logs)
     .then(() => res.status(200).json({ invalidEvents }).end())
     .catch((err) => {
       console.error(err);
